@@ -22,7 +22,20 @@ async function signin(req, res, next) {
     }
 }
 
+async function findDoctor(req, res, next) {
+    const { name, local, expertise } = req.query
+
+    try {
+        const doc = await userServices.findDoctor(name, local, expertise)
+        res.send(doc)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export default {
     signup,
-    signin
+    signin,
+    findDoctor
 }

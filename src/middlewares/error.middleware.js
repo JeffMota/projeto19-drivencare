@@ -18,4 +18,10 @@ export function handleApplicationErrors(err, req, res, next) {
             .status(httpStatus.UNAUTHORIZED)
             .send({ message: err.message })
     }
+
+    if (err.name === "NotFound") {
+        return res
+            .status(httpStatus.NOT_FOUND)
+            .send({ message: err.message })
+    }
 }

@@ -13,14 +13,23 @@ function duplicatedEmailError(email) {
     }
 }
 
-function invalidCredentialsError() {
+function invalidCredentialsError(message = "Email or password incorrect") {
     return {
         name: "InvalidCredentialsErro",
-        message: "Email or password incorrect"
+        message
+    }
+}
+
+function notFound(message = '') {
+    return {
+        name: "NotFound",
+        message
     }
 }
 
 export default {
     validateSchemaError,
-    duplicatedEmailError
+    duplicatedEmailError,
+    invalidCredentialsError,
+    notFound
 }

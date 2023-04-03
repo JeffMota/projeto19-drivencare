@@ -1,10 +1,22 @@
 import connectionDb from "../config/database.js"
 
-async function findByEmail(email) {
+async function findUserBy(keyField, keyWord) {
     return await connectionDb.query(`
-    SELECT * FROM users WHERE email = $1;
+        SELECT * FROM users WHERE ${keyField} = $1;
     `,
-        [email]
+        [keyWord]
+    )
+}
+
+async function findDoctor(keyField, keyWord) {
+    return await connectionDb.query(`
+    SELECT users.name, "doctorInfos".expertise, "doctorInfos".local 
+    FROM users 
+        JOIN "doctorInfos" 
+            ON "doctorInfos"."userId" = users.id 
+    WHERE ${keyField} LIKE $1;
+    `,
+        ["%" + keyWord + "%"]
     )
 }
 
@@ -25,7 +37,8 @@ async function setDocInfos({ userId, expertise, local }) {
 }
 
 export default {
-    findByEmail,
+    findUserBy,
     signup,
-    setDocInfos
+    setDocInfos,
+    findDoctor
 }

@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 
 async function signup({ name, email, password, role, expertise, local }) {
 
-    const { rowCount } = await userRepositories.findByEmail(email)
+    const { rowCount } = await userRepositories.findUserBy('email', email)
     if (rowCount) throw errors.duplicatedEmailError(email)
 
     const hashedPassword = await bcrypt.hash(password, 10)
@@ -22,12 +22,10 @@ async function signup({ name, email, password, role, expertise, local }) {
         await userRepositories.setDocInfos({ userId, expertise, local })
     }
 
-    console.log(userId)
-
 }
 
 async function signin({ email, password }) {
-    const { rowCount, rows: [user] } = await userRepositories.findByEmail(email)
+    const { rowCount, rows: [user] } = await userRepositories.findUserBy('email', email)
     if (!rowCount) throw errors.invalidCredentialsError()
 
     const passwordIsCorrect = bcrypt.compareSync(password, user.password)
@@ -42,7 +40,31 @@ async function signin({ email, password }) {
     return token
 }
 
+async function findDoctor(name, local, expertise) {
+    let doc
+
+    if (name) {
+        const { rowCount, rows } = await userRepositories.findDoctor("name", name)
+        if (!rowCount) throw errors.notFound("Doctor not found")
+        doc = rows
+    }
+    if (local) {
+        const { rowCount, rows } = await userRepositories.findDoctor('local', local)
+        if (!rowCount) throw errors.notFound("Local not found")
+        doc = rows
+    }
+    if (expertise) {
+        const { rowCount, rows } = await userRepositories.findDoctor('expertise', expertise)
+        if (!rowCount) throw errors.notFound("Expertise not found")
+        doc = rows
+    }
+
+    if (!doc) throw errors.notFound("Doctor not found")
+    return doc
+}
+
 export default {
     signup,
-    signin
+    signin,
+    findDoctor
 }
