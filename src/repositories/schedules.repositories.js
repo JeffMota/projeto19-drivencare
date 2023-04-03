@@ -16,7 +16,16 @@ async function getUnavailableTime(doctorId) {
     )
 }
 
+async function sendSchedulingRequest(scheduleId, patientId, doctorId, time) {
+    await connectionDb.query(`
+        INSERT INTO scheduling ("scheduleId", "patientId", "doctorId", time) values ($1, $2, $3, $4);
+    `,
+        [scheduleId, patientId, doctorId, time]
+    )
+}
+
 export default {
     getDocSchedule,
-    getUnavailableTime
+    getUnavailableTime,
+    sendSchedulingRequest
 }

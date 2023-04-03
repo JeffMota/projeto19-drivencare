@@ -13,15 +13,19 @@ async function getDocSchedule(req, res, next) {
 }
 
 async function sendSchedulingRequest(req, res, next) {
-
+    const { scheduleId, doctorId, time } = req.body
+    const patientId = res.locals.user.id
 
     try {
+        await scheduleService.sendSchedulingRequest(scheduleId, patientId, doctorId, time)
 
+        res.sendStatus(201)
     } catch (error) {
         next(error)
     }
 }
 
 export default {
-    getDocSchedule
+    getDocSchedule,
+    sendSchedulingRequest
 }

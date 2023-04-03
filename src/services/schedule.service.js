@@ -41,6 +41,16 @@ async function getDocSchedule(id) {
     return schedule
 }
 
+async function sendSchedulingRequest(scheduleId, patientId, doctorId, time) {
+
+    const { rowCount } = await userRepositories.findUserBy('id', doctorId)
+    if (!rowCount) throw errors.notFound("Doctor not found")
+
+    await scheduleRepositories.sendSchedulingRequest(scheduleId, patientId, doctorId, time)
+
+}
+
 export default {
-    getDocSchedule
+    getDocSchedule,
+    sendSchedulingRequest
 }
