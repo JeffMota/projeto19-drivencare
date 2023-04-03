@@ -24,8 +24,29 @@ async function sendSchedulingRequest(scheduleId, patientId, doctorId, time) {
     )
 }
 
+async function getScheduling(role, userId) {
+    return await connectionDb.query(`
+    SELECT time, status, date, patient.name AS patient, 
+        doctor.name AS doctor, 
+        "doctorInfos".expertise 
+    FROM scheduling 
+        JOIN schedules 
+            ON scheduling."scheduleId" = schedules.id 
+        JOIN users AS patient 
+            ON scheduling."patientId" = patient.id 
+        JOIN users AS doctor 
+            ON scheduling."doctorId" = doctor.id 
+        JOIN "doctorInfos" 
+            ON doctor.id = "doctorInfos"."userId" 
+    WHERE scheduling."${role}" = $1;
+    `,
+        [userId]
+    )
+}
+
 export default {
     getDocSchedule,
     getUnavailableTime,
-    sendSchedulingRequest
+    sendSchedulingRequest,
+    getScheduling
 }

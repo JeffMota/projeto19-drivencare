@@ -50,7 +50,26 @@ async function sendSchedulingRequest(scheduleId, patientId, doctorId, time) {
 
 }
 
+async function getSchedules(userId) {
+    let schedules
+
+    const { rowCount, rows: [user] } = await userRepositories.findUserBy('id', userId)
+    if (!rowCount) throw errors.notFound("User not found")
+
+    if (user.role === "pat") {
+        const { rows } = await scheduleRepositories.getScheduling('patientId', userId)
+        schedules = rows
+    }
+    if (user.role === "doc") {
+        const { rows } = await scheduleRepositories.getScheduling('doctorId', userId)
+        schedules = rows
+    }
+
+    return schedules
+}
+
 export default {
     getDocSchedule,
-    sendSchedulingRequest
+    sendSchedulingRequest,
+    getSchedules
 }

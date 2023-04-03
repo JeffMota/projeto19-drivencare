@@ -6,6 +6,7 @@ import { schedulingSchema } from "../schemas/schedules.schemas.js"
 
 const scheduleRouter = Router()
 
+scheduleRouter.get("/list", validateToken, scheduleController.getSchedules)
 scheduleRouter.get("/:id", validateToken, scheduleController.getDocSchedule)
 scheduleRouter.post("/request", validateToken, validateSchemas(schedulingSchema), scheduleController.sendSchedulingRequest)
 

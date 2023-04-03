@@ -25,7 +25,21 @@ async function sendSchedulingRequest(req, res, next) {
     }
 }
 
+async function getSchedules(req, res, next) {
+    const userId = res.locals.user.id
+
+    try {
+        const schedules = await scheduleService.getSchedules(userId)
+
+        res.send(schedules)
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export default {
     getDocSchedule,
-    sendSchedulingRequest
+    sendSchedulingRequest,
+    getSchedules
 }
