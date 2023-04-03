@@ -10,7 +10,5 @@ userRouter.post("/signup", validateSchemas(signupSchema), userControllers.signup
 userRouter.post("/signin", validateSchemas(signinSchema), userControllers.signin)
 
 userRouter.get("/doctors/", validateToken, userControllers.findDoctor)
-// userRouter.get("/doctors/?expertise", validateToken, userControllers.findDoctor)
-// userRouter.get("/doctors/?local", validateToken, userControllers.findDoctor)
 
 export default userRouter
