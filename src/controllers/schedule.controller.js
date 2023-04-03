@@ -12,6 +12,16 @@ async function getDocSchedule(req, res, next) {
 
 }
 
+async function sendSchedulingRequest(req, res, next) {
+
+
+    try {
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export default {
     getDocSchedule
 }

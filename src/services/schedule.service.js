@@ -8,18 +8,34 @@ async function getDocSchedule(id) {
     if (!rowCount) throw errors.notFound("Doctor not found")
 
     const { rows } = await scheduleRepositories.getDocSchedule(id)
+    const { rows: times } = await scheduleRepositories.getUnavailableTime(id)
+
 
     const schedule = rows.map(sch => {
         const start = Number(sch.startHour.split(':')[0])
         const end = Number(sch.endHour.split(':')[0])
 
         const list = []
+
         for (let i = start; i < end; i++) {
-            if (i < 10) list.push('0' + i + ':00')
-            else list.push(i + ':00')
+            let time
+            let available = true
+            if (i < 10) {
+                time = '0' + i + ':00'
+            }
+            else {
+                time = i + ':00'
+            }
+
+            times.forEach(times => {
+                if (times.scheduleId == sch.id && times.time == time) available = false
+            })
+
+            if (available) list.push(time)
+
         }
 
-        return { name: user.name, date: sch.date, schedule: list }
+        return { id: sch.id, name: user.name, date: sch.date, schedule: list }
     })
 
     return schedule
